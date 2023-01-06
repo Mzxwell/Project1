@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "dino.h"
 
 int main() {
     printf("Hello, World!\n");
