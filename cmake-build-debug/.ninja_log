@@ -1,0 +1,5 @@
+# ninja log v5
+1	291	6946988350657197	build.ninja	97cd6fe37af6f355
+4	605	6946933612780962	CMakeFiles/Project1.dir/BandE.c.obj	ebe61ce95566c668
+4	605	6946947494163965	CMakeFiles/Project1.dir/main.c.obj	202c017c3c72e348
+605	873	6946947496660103	Project1.exe	4137e2489ead085
