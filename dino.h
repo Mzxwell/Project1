@@ -48,6 +48,8 @@ static SDL_Rect RectLow = {0, 480, 248, 128};
 static TTF_Font *ScoreFont = NULL;
 
 static bool IsLow = 0;
+static bool IsLeap = 0;
+static bool IsSub = 0;
 static uint32_t Rand;
 static int road1 = 0;
 static uint32_t rand0;
@@ -55,21 +57,24 @@ static int barnum[3];
 static int b = 1;
 static int genxin = 3;
 static int speed;
+static int leap[3] = {75,12, 0};
 static uint32_t ScoreCal;
 static bool RectNum[3] = {true, true, true};
 static bool stop = true;
 static bool done = true;
+static bool a0 = true;
 static uint32_t time = 0;
-static uint32_t time0 = 0;
+static uint32_t TimeA = 0;
+static uint32_t interval = 0;
 static uint32_t ScoreNum;
 static uint32_t TotalTime = 0;
 static char ScoreC[12];
 
 void Quit();
 void load();
-void display1(const int *j, int a);
+void display1(const int *j, bool a);
 void display2(const int *j, int a);
-void leap(int i, const int *j);
+void Leap(int i, const int *j);
 void fall(int i, const int *j);
 void LoadRect(int r1);
 void ReBarRect(uint32_t a, int i);
@@ -79,5 +84,6 @@ bool IsDefeat0(int a);
 void Score(char *a, uint32_t c);
 void Init();
 void CreateScore();
+void MoveRect();
 
 #endif //PROJECT1_DINO_H
