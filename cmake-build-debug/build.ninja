@@ -55,18 +55,6 @@ build CMakeFiles/Project1.dir/main.c.obj: C_COMPILER__Project1_Debug D$:/CPL/CLC
   OBJECT_DIR = CMakeFiles\Project1.dir
   OBJECT_FILE_DIR = CMakeFiles\Project1.dir
 
-build CMakeFiles/Project1.dir/calculate.c.obj: C_COMPILER__Project1_Debug D$:/CPL/CLCode/dino/Project1/calculate.c || cmake_object_order_depends_target_Project1
-  DEP_FILE = CMakeFiles\Project1.dir\calculate.c.obj.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu11
-  OBJECT_DIR = CMakeFiles\Project1.dir
-  OBJECT_FILE_DIR = CMakeFiles\Project1.dir
-
-build CMakeFiles/Project1.dir/Quit.c.obj: C_COMPILER__Project1_Debug D$:/CPL/CLCode/dino/Project1/Quit.c || cmake_object_order_depends_target_Project1
-  DEP_FILE = CMakeFiles\Project1.dir\Quit.c.obj.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu11
-  OBJECT_DIR = CMakeFiles\Project1.dir
-  OBJECT_FILE_DIR = CMakeFiles\Project1.dir
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Project1
@@ -75,7 +63,7 @@ build CMakeFiles/Project1.dir/Quit.c.obj: C_COMPILER__Project1_Debug D$:/CPL/CLC
 #############################################
 # Link the executable Project1.exe
 
-build Project1.exe: C_EXECUTABLE_LINKER__Project1_Debug CMakeFiles/Project1.dir/main.c.obj CMakeFiles/Project1.dir/calculate.c.obj CMakeFiles/Project1.dir/Quit.c.obj
+build Project1.exe: C_EXECUTABLE_LINKER__Project1_Debug CMakeFiles/Project1.dir/main.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lmingw32  -lSDL2main  -lSDL2  -lSDL2_image  -lSDL2_ttf  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Project1.dir

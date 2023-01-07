@@ -33,6 +33,10 @@ static SDL_Surface *img_barrier[6] = {NULL};
 static SDL_Surface *ImgLow[2] = {NULL};
 static SDL_Surface *MainBack = NULL;
 static SDL_Surface *ScoreS = NULL;
+static SDL_Surface *DefImg = NULL;
+static SDL_Surface *DefeatS = NULL;
+static SDL_Texture *DefeatT = NULL;
+static SDL_Texture *DefTexture = NULL;
 static SDL_Texture *ScoreT = NULL;
 static SDL_Texture *MainBackTexture = NULL;
 static SDL_Texture *texture1 = NULL;
@@ -51,6 +55,7 @@ static SDL_Rect rect_barrier[3] = {{width, 500, 166, 160},
                      {width, 500, 166, 160},
                      {width, 500, 166, 160}};
 static SDL_Rect RectLow;
+static SDL_Rect game_over = {600, 200, 500, 200};
 static TTF_Font *ScoreFont = NULL;
 
 static bool IsLeap = 0;

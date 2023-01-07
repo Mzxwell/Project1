@@ -4,10 +4,12 @@ int main(int argc, char *argv[]) {
     Init();
     load();
     begin:
+    InitPlay();
     SDL_RenderCopy(R, MainBackTexture, NULL, &rect);
     SDL_RenderPresent(R);
 
     while (done) {
+        SDL_Delay(50);
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
@@ -35,7 +37,7 @@ int main(int argc, char *argv[]) {
     }
 
     play:
-    InitPlay();
+    time = SDL_GetTicks();
     while (done) {
         interval = SDL_GetTicks() - time;
 
@@ -109,6 +111,10 @@ int main(int argc, char *argv[]) {
             }
         }
 
+        if (IsDefeat0(display0.IsLow)) {
+            goto defeat;
+        }
+
         if (IsLeap) {
             leap[0] -= leap[1];
             rect1.y -= leap[0];
@@ -124,15 +130,11 @@ int main(int argc, char *argv[]) {
                 leap[2] = 0;
             }
         }
-
-        if (IsDefeat0(display0.IsLow)) {
-            SDL_Delay(1000);
-            goto begin;
-        }
     }
 
     pause:
     while (done) {
+        SDL_Delay(50);
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
@@ -151,10 +153,36 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+
+    defeat:
+    SDL_RenderCopy(R, DefTexture, NULL, &rect1);
+    SDL_RenderCopy(R, DefeatT, NULL, &game_over);
+    SDL_RenderPresent(R);
+    while (done) {
+        SDL_Delay(50);
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    done = false;
+                    Quit();
+                    break;
+                case SDL_KEYDOWN:
+                    switch (event.key.keysym.sym) {
+                        case SDLK_RETURN:
+                        case SDLK_SPACE:
+                            InitPlay();
+                            goto play;
+                        case SDLK_ESCAPE:
+                            goto begin;
+                    }
+                    break;
+            }
+        }
+    }
 }
 
 void InitPlay() {
-    time = SDL_GetTicks();
+    speed = 3;
     TotalTime = 0;
     for (int i = 0; i < 3; ++i) {
         RectNum[i] = 1;
@@ -175,7 +203,7 @@ bool IsDefeat0(bool a) {
             if (rect_barrier[i].y + rect_barrier[i].h - 30 > rect1.y)
                 c[i]++;
         for (int i = 0; i < 3; ++i)
-            if (rect_barrier[i].y + 60 < rect1.y + rect1.h)
+            if (rect_barrier[i].y + 70 < rect1.y + rect1.h)
                 c[i]++;
         for (int i = 0; i < 3; ++i)
             if (c[i] >= 4)
@@ -245,7 +273,9 @@ int Select(uint32_t i) {
 void CreateScore() {
     ScoreCal = TotalTime / 100;
     sprintf_s(ScoreC, 13, "Scores: %d", ScoreCal);
+    SDL_FreeSurface(ScoreS);
     ScoreS = TTF_RenderUTF8_Blended(ScoreFont, ScoreC, ScoreColor);
+    SDL_DestroyTexture(ScoreT);
     ScoreT = SDL_CreateTextureFromSurface(R, ScoreS);
 
     if (ScoreCal > SpeedA * 100) {
@@ -287,7 +317,9 @@ void load() {
     ImgLow[0] = IMG_Load("picture/low1.png");
     ImgLow[1] = IMG_Load("picture/low2.png");
     MainBack = IMG_Load("picture/mainbg.PNG");
+    DefImg = IMG_Load("picture/defeat.png");
 
+    DefTexture = SDL_CreateTextureFromSurface(R,DefImg);
     MainBackTexture = SDL_CreateTextureFromSurface(R, MainBack);
     texture1 = SDL_CreateTextureFromSurface(R, img1);
     texture2 = SDL_CreateTextureFromSurface(R, img2);
@@ -298,6 +330,8 @@ void load() {
     TextureLow[0] = SDL_CreateTextureFromSurface(R, ImgLow[0]);
     TextureLow[1] = SDL_CreateTextureFromSurface(R, ImgLow[1]);
     ScoreFont = TTF_OpenFont("picture/a.ttf", 50);
+    DefeatS = TTF_RenderUTF8_Blended(ScoreFont, "G A M E  O V E R", ScoreColor);
+    DefeatT = SDL_CreateTextureFromSurface(R, DefeatS);
 
     rect1.x = 55;
     rect1.y = 415;
@@ -346,4 +380,36 @@ void Display(display *a) {
 
     SDL_RenderCopy(R, ScoreT, NULL, &ScoreR);
     SDL_RenderPresent(R);
+}
+
+void Quit() {
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(R);
+    SDL_FreeSurface(img1);
+    SDL_FreeSurface(img2);
+    SDL_FreeSurface(img_road);
+    for (int i = 0; i < 6; ++i) {
+        SDL_FreeSurface(img_barrier[i]);
+    }
+    SDL_FreeSurface(ImgLow[0]);
+    SDL_FreeSurface(ImgLow[1]);
+    SDL_FreeSurface(MainBack);
+    SDL_FreeSurface(ScoreS);
+    SDL_FreeSurface(DefImg);
+    SDL_FreeSurface(DefeatS);
+    SDL_DestroyTexture(DefeatT);
+    SDL_DestroyTexture(DefTexture);
+    SDL_DestroyTexture(ScoreT);
+    SDL_DestroyTexture(MainBackTexture);
+    SDL_DestroyTexture(TextureLow[0]);
+    SDL_DestroyTexture(TextureLow[1]);
+    for (int i = 0; i < 6; ++i) {
+        SDL_DestroyTexture(texture_barrier[i]);
+    }
+    SDL_DestroyTexture(texture1);
+    SDL_DestroyTexture(texture2);
+    SDL_DestroyTexture(texture_road);
+    SDL_DestroyTexture(BackTexture);
+    TTF_CloseFont(ScoreFont);
+    SDL_Quit();
 }
