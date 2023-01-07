@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     }
 
     play:
-    time = SDL_GetTicks();
+    InitPlay();
     while (done) {
         interval = SDL_GetTicks() - time;
 
@@ -48,7 +48,27 @@ int main(int argc, char *argv[]) {
 
         if (time - TimeA > 70) {
             TimeA = time;
-            a0 = 1 - a0;
+            display0.a0 = 1 - display0.a0;
+        }
+
+        for (int i = 0; i < 3; ++i) {
+            if (RectNum[i] && rect_barrier[0].x <= width && rect_barrier[2].x <= width && rect_barrier[1].x <= width) {
+                RectNum[i] = 0;
+                srand(SDL_GetTicks());
+                Rand = rand() % 2834 + 150 * speed;
+                display0.barnum[i] = Select((Rand + 100) % 100);
+                BarRect(i, display0.barnum[i], Rand + width);
+            }
+        }
+
+        Display(&display0);
+        MoveRect();
+
+        for (int i = 0; i < 3; ++i) {
+            if (rect_barrier[i].x < -180) {
+                RectNum[i] = 1;
+                rect_barrier[i].x = width;
+            }
         }
 
         while (SDL_PollEvent(&event)) {
@@ -67,7 +87,7 @@ int main(int argc, char *argv[]) {
                             }
                             break;
                         case SDLK_DOWN:
-                            IsLow = 1;
+                            display0.IsLow = 1;
                             break;
                         case SDLK_ESCAPE:
                             goto pause;
@@ -79,8 +99,8 @@ int main(int argc, char *argv[]) {
                         case SDLK_SPACE:
                             IsSub = 0;
                             break;
-                        case SDLK_s:
-                            IsLow = 0;
+                        case SDLK_DOWN:
+                            display0.IsLow = 0;
                             break;
                     }
                     break;
@@ -92,10 +112,9 @@ int main(int argc, char *argv[]) {
         if (IsLeap) {
             leap[0] -= leap[1];
             rect1.y -= leap[0];
-            if(IsSub && leap[1] > 4 && leap[0] > 0){
+            if (IsSub && leap[1] > 4 && leap[0] > 0) {
                 leap[2] += 2;
                 leap[1] = 12 - leap[2];
-                printf("%d", leap[2]);
             }
             if (rect1.y >= 415) {
                 IsLeap = 0;
@@ -106,8 +125,10 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        display1(barnum, a0);
-        MoveRect();
+        if (IsDefeat0(display0.IsLow)) {
+            SDL_Delay(1000);
+            goto begin;
+        }
     }
 
     pause:
@@ -132,17 +153,114 @@ int main(int argc, char *argv[]) {
     }
 }
 
+void InitPlay() {
+    time = SDL_GetTicks();
+    TotalTime = 0;
+    for (int i = 0; i < 3; ++i) {
+        RectNum[i] = 1;
+        rect_barrier[i].x = width;
+    }
+}
+
+bool IsDefeat0(bool a) {
+    if (!a) {
+        int c[3] = {0};
+        for (int i = 0; i < 3; ++i)
+            if (rect_barrier[i].x + rect_barrier[i].w - 20 > rect1.x)
+                c[i]++;
+        for (int i = 0; i < 3; ++i)
+            if (rect_barrier[i].x + 80 < rect1.x + rect1.h)
+                c[i]++;
+        for (int i = 0; i < 3; ++i)
+            if (rect_barrier[i].y + rect_barrier[i].h - 30 > rect1.y)
+                c[i]++;
+        for (int i = 0; i < 3; ++i)
+            if (rect_barrier[i].y + 60 < rect1.y + rect1.h)
+                c[i]++;
+        for (int i = 0; i < 3; ++i)
+            if (c[i] >= 4)
+                return true;
+        return false;
+    } else {
+        int c[3] = {0};
+        for (int i = 0; i < 3; ++i)
+            if (rect_barrier[i].x + rect_barrier[i].w - 20 > RectLow.x)
+                c[i]++;
+        for (int i = 0; i < 3; ++i)
+            if (rect_barrier[i].x + 20 < RectLow.x + RectLow.h)
+                c[i]++;
+        for (int i = 0; i < 3; ++i)
+            if (rect_barrier[i].y + rect_barrier[i].h - 30 > RectLow.y)
+                c[i]++;
+        for (int i = 0; i < 3; ++i)
+            if (rect_barrier[i].y + 30 < RectLow.y + RectLow.h)
+                c[i]++;
+        for (int i = 0; i < 3; ++i)
+            if (c[i] >= 4)
+                return true;
+        return false;
+    }
+}
+
+void BarRect(int i, int j, uint32_t a) {
+    rect_barrier[i].x = a;
+    if (j != 4)
+        rect_barrier[i].h = img_barrier[j]->h;
+    else {
+        rect_barrier[i].h = img_barrier[4]->h + ((Rand + 100) % img_barrier[4]->h) / 2;
+        rect_barrier[i].y = 550 - rect_barrier[i].h;
+    }
+    rect_barrier[i].w = img_barrier[j]->w;
+    if (j == 0)
+        rect_barrier[i].y = 395;
+    if (j == 1)
+        rect_barrier[i].y = 356;
+    if (j == 2)
+        rect_barrier[i].y = 380;
+    if (j == 3) {
+        rect_barrier[i].y = -18;
+        rect_barrier[i].h = 470;
+    }
+    if (j == 5)
+        rect_barrier[i].y = 0;
+}
+
+int Select(uint32_t i) {
+    if (i == 97 && ScoreCal > 500)
+        return 1;
+    else if (i % 2 == 0)
+        return 0;
+    else if (i % 3 == 0 && ScoreCal > 100)
+        return 4;
+    else if (i % 5 == 0 && ScoreCal > 300)
+        return 2;
+    else if (i % 7 == 0 && ScoreCal > 400)
+        return 5;
+    else if (ScoreCal > 200)
+        return 3;
+    else
+        return 0;
+}
+
 void CreateScore() {
     ScoreCal = TotalTime / 100;
-    sprintf_s(ScoreC, 12, "Scores: %d", ScoreCal);
+    sprintf_s(ScoreC, 13, "Scores: %d", ScoreCal);
     ScoreS = TTF_RenderUTF8_Blended(ScoreFont, ScoreC, ScoreColor);
     ScoreT = SDL_CreateTextureFromSurface(R, ScoreS);
-    speed = ScoreCal / 100 + 3;
+
+    if (ScoreCal > SpeedA * 100) {
+        speed++;
+        SpeedA += speed - 2;
+    }
 }
 
 void MoveRect() {
     rect_road.x = (rect_road.x - (7 * speed)) % 2347;
     rect_road_2.x = rect_road.x + rect_road.w;
+
+    for (int i = 0; i < 3; ++i)
+        if (!RectNum[i])
+            rect_barrier[i].x = rect_barrier[i].x - (7 * speed);
 }
 
 void Init() {
@@ -153,6 +271,10 @@ void Init() {
 }
 
 void load() {
+    SDL_Surface *surface = SDL_GetWindowSurface(window);
+    SDL_FillRect(surface, &rect, 0xff222222);
+    BackTexture = SDL_CreateTextureFromSurface(R, surface);
+
     img1 = IMG_Load("picture/1.png");
     img2 = IMG_Load("picture/2.png");
     img_road = IMG_Load("picture/3.png");
@@ -175,7 +297,7 @@ void load() {
     }
     TextureLow[0] = SDL_CreateTextureFromSurface(R, ImgLow[0]);
     TextureLow[1] = SDL_CreateTextureFromSurface(R, ImgLow[1]);
-    ScoreFont = TTF_OpenFont("a.ttf", 50);
+    ScoreFont = TTF_OpenFont("picture/a.ttf", 50);
 
     rect1.x = 55;
     rect1.y = 415;
@@ -191,24 +313,37 @@ void load() {
     rect_road_2.y = 522;
     rect_road_2.h = img_road->h;
     rect_road_2.w = img_road->w;
+
+    RectLow.x = 55;
+    RectLow.y = 463;
+    RectLow.h = ImgLow[0]->h;
+    RectLow.w = ImgLow[0]->w;
 }
 
-void display1(const int *j, bool a) {
+void Display(display *a) {
     SDL_RenderClear(R);
     SDL_RenderCopy(R, BackTexture, NULL, &rect);
     SDL_RenderCopy(R, texture_road, NULL, &rect_road_2);
     SDL_RenderCopy(R, texture_road, NULL, &rect_road);
-    for (int i = 0; i < 3; ++i) {
-        if (!RectNum[i]) {
-            SDL_RenderCopy(R, texture_barrier[j[i]], NULL, &rect_barrier[i]);
-        }
+
+    for (int i = 0; i < 3; ++i)
+        if (!RectNum[i])
+            SDL_RenderCopy(R, texture_barrier[a->barnum[i]], NULL, &rect_barrier[i]);
+
+    if (!a->IsLow) {
+        if (a->a0 == 0)
+            SDL_RenderCopy(R, texture1, NULL, &rect1);
+        if (a->a0 == 1)
+            SDL_RenderCopy(R, texture2, NULL, &rect1);
     }
-    if (a == 0) {
-        SDL_RenderCopy(R, texture1, NULL, &rect1);
+
+    if (a->IsLow) {
+        if (a->a0 == 0)
+            SDL_RenderCopy(R, TextureLow[0], NULL, &RectLow);
+        if (a->a0 == 1)
+            SDL_RenderCopy(R, TextureLow[1], NULL, &RectLow);
     }
-    if (a == 1) {
-        SDL_RenderCopy(R, texture2, NULL, &rect1);
-    }
+
     SDL_RenderCopy(R, ScoreT, NULL, &ScoreR);
     SDL_RenderPresent(R);
 }

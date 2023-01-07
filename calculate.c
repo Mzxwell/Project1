@@ -4,5 +4,3 @@
 
 #include "dino.h"
 
-
-
