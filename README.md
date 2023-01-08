@@ -1,9 +1,10 @@
 # 张超然的Dino
 ## 一、平台与环境
 1. `dino0.exe`可以直接在 **Windows** 下运行（无需配置环境）;
-2. 关于环境: 需要配置好`SDL2`+`SDL2_image`+`SDL2_ttf`的环境;
-3. 命令行编译: `gcc .\main.c -o Dino -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf`;
-4. 使用 **Clion** 需要注意将 **工作目录** 改为该文件的绝对路径. ~~关于其他IDE我要不知道需要注意些啥QAQ~~
+2. `Dino.exe`需要配置环境后才能运行，且必须与 **picture** 在同一个目录下才能运行；
+3. 关于环境: 需要配置好`SDL2`+`SDL2_image`+`SDL2_ttf`的环境;
+4. 命令行编译: `gcc .\main.c -o Dino -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf`;
+5. 使用 **Clion** 需要注意将 **工作目录** 改为该文件的绝对路径. ~~关于其他IDE我要不知道需要注意些啥QAQ~~
 ## 二、游戏操作
 1. 打开游戏, 可以点击 **PLAY** 或者按 **回车** 或 **空格** 开始, 按 **Esc** 或点击 **×** 退出;
 2. 游戏进行时, 按 **上下键** 或 **空格键** 操纵小恐龙, 按 **Esc** 游戏暂停;
