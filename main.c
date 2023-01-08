@@ -184,7 +184,7 @@ int main(int argc, char *argv[]) {
                     break;
                 case SDL_KEYUP:
                     switch (event.key.keysym.sym) {
-                        case SDLK_UP:
+                        case SDLK_RETURN:
                         case SDLK_SPACE:
                             EnablePlay = 1;
                             IsSub = 0;
