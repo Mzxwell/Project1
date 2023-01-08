@@ -1,6 +1,6 @@
 # 张超然的Dino
 ## 一、平台与环境
-1. `Dino.exe`可以直接在 **Windows** 下运行（无需配置环境）;
+1. `dino0.exe`可以直接在 **Windows** 下运行（无需配置环境）;
 2. 关于环境: 需要配置好`SDL2`+`SDL2_image`+`SDL2_ttf`的环境;
 3. 命令行编译: `gcc .\main.c -o Dino -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf`;
 4. 使用 **Clion** 需要注意将 **工作目录** 改为该文件的绝对路径. ~~关于其他IDE我要不知道需要注意些啥QAQ~~
