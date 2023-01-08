@@ -1,4 +1,4 @@
-# 张超然的Dino
+# Maxwell's Dino
 ## 一、平台与环境
 1. `dino0.exe`可以直接在 **Windows** 下运行（无需配置环境）;
 2. `Dino.exe`需要配置环境后才能运行，且必须与 **picture** 在同一个目录下才能运行；
