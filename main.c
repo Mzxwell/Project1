@@ -81,6 +81,7 @@ int main(int argc, char *argv[]) {
                     switch (event.key.keysym.sym) {
                         case SDLK_UP:
                         case SDLK_SPACE:
+                            EnablePlay = 0;
                             if (!IsLeap) {
                                 IsLeap = 1;
                                 IsSub = 1;
@@ -97,6 +98,7 @@ int main(int argc, char *argv[]) {
                     switch (event.key.keysym.sym) {
                         case SDLK_UP:
                         case SDLK_SPACE:
+                            EnablePlay = 1;
                             IsSub = 0;
                             break;
                         case SDLK_DOWN:
@@ -158,6 +160,7 @@ int main(int argc, char *argv[]) {
 
     defeat:
     Display(&display0);
+    SDL_Delay(500);
     while (done) {
         SDL_Delay(50);
         while (SDL_PollEvent(&event)) {
@@ -170,10 +173,22 @@ int main(int argc, char *argv[]) {
                     switch (event.key.keysym.sym) {
                         case SDLK_RETURN:
                         case SDLK_SPACE:
-                            InitPlay();
-                            goto play;
+                            if(EnablePlay) {
+                                InitPlay();
+                                goto play;
+                            }
+                            break;
                         case SDLK_ESCAPE:
                             goto begin;
+                    }
+                    break;
+                case SDL_KEYUP:
+                    switch (event.key.keysym.sym) {
+                        case SDLK_UP:
+                        case SDLK_SPACE:
+                            EnablePlay = 1;
+                            IsSub = 0;
+                            break;
                     }
                     break;
                 case SDL_MOUSEBUTTONDOWN:
